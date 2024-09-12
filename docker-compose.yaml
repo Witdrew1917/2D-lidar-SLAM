@@ -1,0 +1,10 @@
+services:
+  lidar:
+    build: ./docker
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    volumes:
+      - ./rplidar_ros:/root/src/rplidar_ros
+    command: 
+      sleep infinity
+

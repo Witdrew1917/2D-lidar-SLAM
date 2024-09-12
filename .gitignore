@@ -1,3 +1,15 @@
+# Project Specific
+.catkin_workspace
+rplidar_ros/
+sdk/
+app/
+*.inc
+output/
+
+Makefile
+
+
+
 # Prerequisites
 *.d
 
