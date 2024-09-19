@@ -1,0 +1,5 @@
+n_searched_landmarks: 4
+landmark_criteria_angle_spacing: 3
+residual_threshold: 0.05
+n_inlier_stop_criteria: 8
+object_padding: 0.02

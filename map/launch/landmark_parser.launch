@@ -1,0 +1,4 @@
+<launch>
+  <node name="landmark_parser" pkg="map" type="landmark_parser.py" output="screen">
+  </node>
+</launch>

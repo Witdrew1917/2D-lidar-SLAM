@@ -1,0 +1,17 @@
+<package format="2">
+  <name>map</name>
+  <version>0.0.0</version>
+  <description>
+  This package provides a map with various SLAM features.
+  </description>
+  <maintainer email="arvid.lavenoling@afry.com">PR-map</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+</package>
