@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import rospy
 from sensor_msgs.msg import LaserScan
+from map.msg import Landmark
 
 import numpy as np
 from sklearn import linear_model
 
 LARGE_NUM = 88888
 
-def parse(lidar_scan):
+def parse(lidar_scan, publisher):
 
     tuning_params = {
         "n_searched_landmarks": 4,
@@ -18,10 +19,11 @@ def parse(lidar_scan):
     }
 
     angle_min = lidar_scan.angle_min
-    angle_max = lidar_scan.angle_max
     angle_increment = lidar_scan.angle_increment
 
-    ranges, angles = zip(*[(ele,angle_min+i*angle_increment) for i, ele in enumerate(lidar_scan.ranges) if ele != float('inf') and ele != 0])
+    ranges, angles = zip(*[(ele,angle_min+i*angle_increment) \
+            for i, ele in enumerate(lidar_scan.ranges) \
+            if ele != float('inf') and ele != 0])
 
     ranges = np.array(ranges)
     angles = np.array(angles)
@@ -54,16 +56,29 @@ def parse(lidar_scan):
             break
 
         tol = tuning_params["object_padding"]
-        line_X = np.array([x[inlier_mask][1:-1].min()-tol, x[inlier_mask][1:-1].max()+tol])[:, np.newaxis]
+        line_X = np.array([x[inlier_mask][1:-1].min()-tol, \
+                x[inlier_mask][1:-1].max()+tol])[:, np.newaxis]
         line_y_ransac = ransac.predict(line_X)
 
-        landmarks.append({"x": line_X.tolist(), "y": line_y_ransac.tolist()})
+
+        landmarks.append({'x': line_X.squeeze(-1).tolist(), \
+                'y': line_y_ransac.squeeze(-1).tolist()})
 
         angles = angles[outlier_mask]
         ranges = ranges[outlier_mask]
 
 
-    rospy.loginfo(rospy.get_caller_id() + "I found the following landmarks \n %s", landmarks)
+    for landmark in landmarks:
+        msg = Landmark()
+        msg.x = landmark['x']
+        msg.y = landmark['y']
+
+        #rospy.loginfo(msg)
+        try:
+            publisher.publish(msg)
+        except rospy.ROSInterruptException: pass
+
+    #rospy.loginfo(rospy.get_caller_id() + "I found the following landmarks \n %s", landmarks)
 
     
 def ransac_parser():
@@ -74,8 +89,10 @@ def ransac_parser():
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
     rospy.init_node('ransac_parser', anonymous=True)
+    
+    publisher = rospy.Publisher("landmarks", Landmark, queue_size=5)
 
-    rospy.Subscriber("scan", LaserScan, parse)
+    rospy.Subscriber("scan", LaserScan, callback=parse, callback_args=publisher)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
