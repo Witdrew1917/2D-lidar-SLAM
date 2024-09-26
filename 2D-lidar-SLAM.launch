@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+Arvid Laveno Ling
+arvid.lavenoling@afry.com
+
+This file launches all nodes/components needed to run a SLAM application
+for the ADEPT platform.
+-->
+<launch>
+    <include file="src/LOCALIZATION/map/launch/landmark_parser.launch"/>
+    <include file="src/LOCALIZATION/rplidar_ros/launch/rplidar.launch"/>
+        
+
+    <arg name="racecar_version" default="racecar-v2" />
+
+    <group ns="vesc">
+        <!-- Spawn MUXs -->
+        <include file="$(find racecar)/launch/mux.launch" />
+
+        <!-- start electronic speed controller driver -->
+        <include file="$(find racecar)/launch/includes/$(arg racecar_version)/vesc.launch.xml" >
+            <arg name="racecar_version" value="$(arg racecar_version)" />
+        </include>
+    </group>
+
+    <!-- static transforms, e.g. base_link to imu -->
+    <include file="$(find racecar)/launch/includes/$(arg racecar_version)/static_transforms.launch.xml" />
+
+    <!-- Can change! -->
+    <include file="src/CONTROL/planners/launch/square_planner.launch"/>
+
+</launch>
+

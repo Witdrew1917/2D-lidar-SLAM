@@ -6,6 +6,7 @@ services:
     volumes:
       - ./rplidar_ros:/root/src/rplidar_ros
       - ./map:/root/src/map
+      - ./planners:/root/src/planners
     command: 
       sleep infinity
 

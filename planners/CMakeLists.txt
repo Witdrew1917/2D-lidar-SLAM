@@ -1,19 +1,18 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(map)
+project(planners)
 find_package(catkin REQUIRED COMPONENTS
     roscpp
     rospy
     std_msgs
-    sensor_msgs
     message_generation
 )
 
 catkin_python_setup()
 
-
 add_message_files(
     FILES
-    Landmark.msg
+    AckermannDrive.msg
+    AckermannDriveStamped.msg
 )
 
 generate_messages(
@@ -24,6 +23,6 @@ generate_messages(
 catkin_package(
     CATKIN_DEPENDS message_runtime
 )
-catkin_install_python(PROGRAMS scripts/landmark_parser.py
+catkin_install_python(PROGRAMS scripts/square_planner.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

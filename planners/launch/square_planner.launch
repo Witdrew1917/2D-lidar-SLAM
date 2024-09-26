@@ -1,0 +1,4 @@
+<launch>
+  <node name="square_planner" pkg="planners" type="square_planner.py" output="screen">
+  </node>
+</launch>
